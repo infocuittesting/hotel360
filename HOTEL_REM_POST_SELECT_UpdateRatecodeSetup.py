@@ -45,10 +45,10 @@ def HOTEL_REM_POST_SELECT_UpdateRatecodeSetup(request):
       rate_details = json.loads(dbget("select * from revenue_management.rate_details \
                                        where ratecode_id='"+str(cords['ratecode_id'])+"'"))
 
-      #print("rate_details  ",rate_details, len(rate_details))
+      print("rate_details  ",rate_details, len(rate_details))
       no = 0
       for rate in rate_details:
-          #print("rate",rate)
+          print("no",no)
           get_detail_rate = json.loads(dbget("SELECT rates_all.rates_id, rates_all.ratecode_id, \
                                               rates_all.rate_details_id, season_code.*, rates_all.rate_date,\
                                               rates_all.one_adult_rate, rates_all.two_adult_rate, rates_all.three_adult_rate,\
@@ -62,12 +62,14 @@ def HOTEL_REM_POST_SELECT_UpdateRatecodeSetup(request):
                                               where rates_all.ratecode_id='"+str(rate['ratecode_id'])+"' "))
 
           print("-----------------------------------")
-          #print("get_detail_rate", get_detail_rate,len(get_detail_rate))
+          print("get_detail_rate", get_detail_rate[0],len(get_detail_rate))
           
           if len(get_detail_rate) != 0:
              detail_rate = get_detail_rate[no]
              if  detail_rate['rate_tier_id'] != 0:
                  detail_rate['packages_id'] = 0
+
+
           #print("rateof", detail_rate,type(detail_rate))
           
           
@@ -99,7 +101,7 @@ def HOTEL_REM_POST_SELECT_UpdateRatecodeSetup(request):
              
              rate['advanced_details'] = detail_rate
 
-          no+=1
+          no = len(get_detail_rate)-1
       cords['rate_details'] = rate_details        
 
     return(json.dumps({"records":records,"return_code":"RRS","message":"Record Retrived Successfully"},indent=4))
@@ -193,7 +195,7 @@ def HOTEL_REM_POST_SELECT_SelectRatesetupAll(request):
              detail_rate['days'] = z
              rate['advanced_details'] = detail_rate
 
-          no+=1
+          no=len(get_detail_rate)-1
       cords['rate_details'] = rate_details        
 
     return(json.dumps({"records":records,"return_code":"RRS","message":"Record Retrived Successfully"},indent=4))
@@ -296,7 +298,7 @@ def HOTEL_REM_POST_SELECT_GetRatecodeSetup(ids):
              
              rate['advanced_details'] = detail_rate
 
-          no+=1
+          no=len(get_detail_rate)-1
       cords['rate_details'] = rate_details        
 
     return(json.dumps({"records":records,"return_code":"RRS","message":"Record Retrived Successfully"},indent=4))
